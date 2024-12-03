@@ -1,0 +1,84 @@
+import {
+  AutomationDocument,
+  AwsApiStep,
+  AwsService,
+  DataTypeEnum,
+  ExecuteScriptStep,
+  PythonVersion,
+  ScriptCode,
+  ScriptLanguage,
+} from "@cdklabs/cdk-ssm-documents";
+
+const putItemDocument = new AutomationDocument(this, "DDBTTLPutItem", {
+  documentName: "DdbTtlPutItemAutomation",
+});
+
+putItemDocument.addStep(
+  new ExecuteScriptStep(this, "GetCurrentTime", {
+    language: ScriptLanguage.python(
+      PythonVersion.VERSION_3_11,
+      "get_current_time"
+    ),
+    code: ScriptCode.inline(dedent`
+          from datetime import datetime
+          import time
+
+          def get_current_time(events, context):
+            return {
+              "currenTimeIso8601": datetime.utcnow().isoformat() + "Z",
+              "currenTimeSecondsSinceEpoch": str(int(time.time()))
+            }
+        `),
+    inputPayload: {},
+    outputs: [
+      {
+        outputType: DataTypeEnum.STRING,
+        name: "currenTimeIso8601",
+        selector: "$.Payload.currenTimeIso8601",
+      },
+      {
+        outputType: DataTypeEnum.STRING,
+        name: "currenTimeSecondsSinceEpoch",
+        selector: "$.Payload.currenTimeSecondsSinceEpoch",
+      },
+    ],
+  })
+);
+
+putItemDocument.addStep(
+  new AwsApiStep(this, "PutItem", {
+    service: AwsService.DYNAMO_DB,
+    pascalCaseApi: "putItem",
+    apiParams: {
+      TableName: table.tableName,
+      Item: {
+        pk: {
+          S: "{{ GetCurrentTime.currenTimeIso8601 }}",
+        },
+        sk: {
+          S: "{{ GetCurrentTime.currenTimeIso8601 }}",
+        },
+        ttl: {
+          N: "{{ GetCurrentTime.currenTimeSecondsSinceEpoch }}",
+        },
+      },
+    },
+    outputs: [],
+  })
+);
+
+putItemRule.addTarget(
+  new AwsApi({
+    service: "ssm",
+    action: "startAutomationExecution",
+    parameters: {
+      DocumentName: putItemDocument.documentName,
+      DocumentVersion: "$DEFAULT",
+      Mode: "Auto",
+    },
+    policyStatement: new PolicyStatement({
+      actions: ["ssm:StartAutomationExecution", "dynamodb:PutItem"],
+      resources: ["*"],
+    }),
+  }),
+);
