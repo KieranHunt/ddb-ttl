@@ -2,6 +2,25 @@ import { App } from "aws-cdk-lib";
 import { DdbTtlStack } from "../lib/ddb-ttl-stack";
 import { Template } from "aws-cdk-lib/assertions";
 
+type TemplateJson = ReturnType<Template["toJSON"]>;
+
+const replaceS3Key: (template: TemplateJson) => TemplateJson = (template) => {
+  if (Array.isArray(template)) {
+    return template.map((item) => replaceS3Key(item));
+  } else if (template !== null && typeof template === "object") {
+    for (let key in template) {
+      if (template.hasOwnProperty(key)) {
+        if (key === "S3Key") {
+          template[key] = "NON-DETERMINISTIC VALUE. Replaced for tests only.";
+        } else {
+          template[key] = replaceS3Key(template[key]);
+        }
+      }
+    }
+  }
+  return template;
+};
+
 describe(DdbTtlStack, () => {
   test("Matches the snapshot", () => {
     const app = new App();
@@ -10,7 +29,7 @@ describe(DdbTtlStack, () => {
 
     const template = Template.fromStack(ddbTtlStack);
 
-    expect(template.toJSON()).toMatchInlineSnapshot(`
+    expect(replaceS3Key(template.toJSON())).toMatchInlineSnapshot(`
       {
         "Parameters": {
           "BootstrapVersion": {
@@ -148,7 +167,7 @@ describe(DdbTtlStack, () => {
                 "S3Bucket": {
                   "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
                 },
-                "S3Key": "404cf482dad1068e578bb324e640454a12df377fa5902c430d50ba90e86f3bfc.zip",
+                "S3Key": "NON-DETERMINISTIC VALUE. Replaced for tests only.",
               },
               "Environment": {
                 "Variables": {
@@ -247,7 +266,7 @@ describe(DdbTtlStack, () => {
                 "S3Bucket": {
                   "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
                 },
-                "S3Key": "6f4f2522e2a282e430bb56ca7c48d36355eca99736074041d8ae7f6f8c4234c4.zip",
+                "S3Key": "NON-DETERMINISTIC VALUE. Replaced for tests only.",
               },
               "Environment": {
                 "Variables": {
