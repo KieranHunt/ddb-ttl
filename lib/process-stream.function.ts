@@ -3,6 +3,7 @@ import { metricScope, Unit, StorageResolution } from "aws-embedded-metrics";
 import { z } from "zod";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { CloudWatchClient, GetMetricWidgetImageCommand } from "@aws-sdk/client-cloudwatch";
+import { parse as parseArn } from "@aws-sdk/util-arn-parser";
 
 /**
  * @example
@@ -62,26 +63,24 @@ export const handler: DynamoDBStreamHandler = metricScope((metrics) => async (ev
 
   const parsedEvent = z
     .object({
-      Records: z.array(
-        z.object({
-          eventName: z.enum(["REMOVE", "MODIFY", "INSERT"]),
-          dynamodb: z.object({
-            Keys: z.object({
-              pk: z.object({
-                S: z.string(),
+      Records: z
+        .array(
+          z.object({
+            eventName: z.enum(["REMOVE"]),
+            dynamodb: z.object({
+              Keys: z.object({
+                pk: z.object({
+                  S: z.string(),
+                }),
               }),
             }),
           }),
-        }),
-      ).length(1),
+        )
+        .length(1),
     })
     .parse(event);
 
-  const record = parsedEvent.Records[0]!!
-
-  if (record.eventName != "REMOVE") {
-    return;
-  }
+  const record = parsedEvent.Records[0]!!;
 
   const differenceFromNow = new Date().getTime() - new Date(record.dynamodb.Keys.pk.S).getTime();
 
@@ -95,6 +94,8 @@ export const handler: DynamoDBStreamHandler = metricScope((metrics) => async (ev
     })
     .parse(process.env);
 
+  const accountId = parseArn(context.invokedFunctionArn).accountId;
+
   const getLatencyMetricWidgetImageOutput = await cloudwatchClient.send(
     new GetMetricWidgetImageCommand({
       MetricWidget: JSON.stringify({
@@ -105,7 +106,7 @@ export const handler: DynamoDBStreamHandler = metricScope((metrics) => async (ev
               label: "Time elapsed between TTL and removal",
               id: "e1",
               region: environmentVariables.AWS_REGION,
-              accountId: "364265685121",
+              accountId,
             },
           ],
           [
@@ -122,14 +123,14 @@ export const handler: DynamoDBStreamHandler = metricScope((metrics) => async (ev
               visible: false,
               period: 300,
               region: environmentVariables.AWS_REGION,
-              accountId: "364265685121",
+              accountId,
             },
           ],
         ],
         sparkline: false,
         view: "timeSeries",
         stacked: false,
-        region: "us-east-1",
+        region: environmentVariables.AWS_REGION,
         stat: "Maximum",
         period: 60,
         start: "-PT24H",
