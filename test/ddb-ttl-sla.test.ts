@@ -287,7 +287,7 @@ describe(DdbTtlStack, () => {
             },
             "Type": "AWS::Lambda::Function",
           },
-          "StreamProcessorFunctionDDBStreamEventSource2A121575": {
+          "StreamProcessorFunctionDynamoDBEventSourceDdbTtlStackTable86CC4BFE6E25545F": {
             "Properties": {
               "BatchSize": 1,
               "EventSourceArn": {
@@ -296,10 +296,17 @@ describe(DdbTtlStack, () => {
                   "StreamArn",
                 ],
               },
+              "FilterCriteria": {
+                "Filters": [
+                  {
+                    "Pattern": "{"eventName":["REMOVE"]}",
+                  },
+                ],
+              },
               "FunctionName": {
                 "Ref": "StreamProcessorFunctionCB303F00",
               },
-              "MaximumRetryAttempts": 0,
+              "MaximumRetryAttempts": 1,
               "StartingPosition": "LATEST",
             },
             "Type": "AWS::Lambda::EventSourceMapping",
@@ -340,6 +347,30 @@ describe(DdbTtlStack, () => {
               "PolicyDocument": {
                 "Statement": [
                   {
+                    "Action": "dynamodb:ListStreams",
+                    "Effect": "Allow",
+                    "Resource": "*",
+                  },
+                  {
+                    "Action": [
+                      "dynamodb:DescribeStream",
+                      "dynamodb:GetRecords",
+                      "dynamodb:GetShardIterator",
+                    ],
+                    "Effect": "Allow",
+                    "Resource": {
+                      "Fn::GetAtt": [
+                        "TableCD117FA1",
+                        "StreamArn",
+                      ],
+                    },
+                  },
+                  {
+                    "Action": "cloudwatch:GetMetricWidgetImage",
+                    "Effect": "Allow",
+                    "Resource": "*",
+                  },
+                  {
                     "Action": [
                       "s3:GetObject*",
                       "s3:GetBucket*",
@@ -375,30 +406,6 @@ describe(DdbTtlStack, () => {
                         ],
                       },
                     ],
-                  },
-                  {
-                    "Action": "dynamodb:ListStreams",
-                    "Effect": "Allow",
-                    "Resource": "*",
-                  },
-                  {
-                    "Action": [
-                      "dynamodb:DescribeStream",
-                      "dynamodb:GetRecords",
-                      "dynamodb:GetShardIterator",
-                    ],
-                    "Effect": "Allow",
-                    "Resource": {
-                      "Fn::GetAtt": [
-                        "TableCD117FA1",
-                        "StreamArn",
-                      ],
-                    },
-                  },
-                  {
-                    "Action": "cloudwatch:GetMetricWidgetImage",
-                    "Effect": "Allow",
-                    "Resource": "*",
                   },
                 ],
                 "Version": "2012-10-17",
