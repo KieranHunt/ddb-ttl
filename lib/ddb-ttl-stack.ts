@@ -1,4 +1,4 @@
-import { Stack, type StackProps } from "aws-cdk-lib";
+import { Duration, Stack, type StackProps } from "aws-cdk-lib";
 import { AttributeType, BillingMode, StreamViewType, Table } from "aws-cdk-lib/aws-dynamodb";
 import { Rule, Schedule } from "aws-cdk-lib/aws-events";
 import { LambdaFunction } from "aws-cdk-lib/aws-events-targets";
@@ -15,7 +15,7 @@ export class DdbTtlStack extends Stack {
     super(scope, id, props);
 
     const putItemRule = new Rule(this, "EventBridgeRule", {
-      schedule: Schedule.cron({ minute: "*" }),
+      schedule: Schedule.rate(Duration.minutes(1)),
     });
 
     const itemPutter = new NodejsFunction(this, "ItemPutterFunction", {
