@@ -122,7 +122,7 @@ describe(DdbTtlStack, () => {
           },
           "EventBridgeRule15224D08": {
             "Properties": {
-              "ScheduleExpression": "cron(* * * * ? *)",
+              "ScheduleExpression": "rate(1 minute)",
               "State": "ENABLED",
               "Targets": [
                 {
