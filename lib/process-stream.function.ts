@@ -143,7 +143,7 @@ export const handler: DynamoDBStreamHandler = metricScope((metrics) => async (ev
         },
         liveData: false,
         setPeriodToTimeRange: true,
-        title: `DynamoDB TTL Latency (updated @ ${new Date().toISOString()}`,
+        title: `DynamoDB TTL Latency (updated @ ${new Date().toISOString()})`,
         width: 768,
         height: 384,
         theme: "dark",
