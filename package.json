@@ -19,7 +19,7 @@
     "prettier-2": "npm:prettier@^2",
     "ts-jest": "^29.3.0",
     "ts-node": "^10.9.2",
-    "typescript": "~5.8.2"
+    "typescript": "~5.8.3"
   },
   "dependencies": {
     "@aws-sdk/client-cloudwatch": "^3.777.0",
