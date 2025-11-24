@@ -28,7 +28,7 @@
     "@aws-sdk/util-arn-parser": "^3.893.0",
     "@types/aws-lambda": "^8.10.159",
     "aws-cdk": "^2.1033.0",
-    "aws-cdk-lib": "2.222.0",
+    "aws-cdk-lib": "2.227.0",
     "aws-embedded-metrics": "^4.2.1",
     "aws-lambda": "^1.0.7",
     "constructs": "^10.4.3",
