@@ -239,9 +239,6 @@ describe(DdbTtlStack, () => {
                           "Arn",
                         ],
                       },
-                      {
-                        "Ref": "AWS::NoValue",
-                      },
                     ],
                   },
                 ],
