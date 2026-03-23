@@ -24,7 +24,7 @@
   "dependencies": {
     "@aws-sdk/client-cloudwatch": "^3.1014.0",
     "@aws-sdk/client-dynamodb": "^3.1009.0",
-    "@aws-sdk/client-s3": "^3.1009.0",
+    "@aws-sdk/client-s3": "^3.1014.0",
     "@aws-sdk/util-arn-parser": "^3.972.2",
     "@types/aws-lambda": "^8.10.161",
     "aws-cdk": "^2.1112.0",
