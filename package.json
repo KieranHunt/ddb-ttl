@@ -13,7 +13,7 @@
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",
-    "@types/node": "25.8.0",
+    "@types/node": "25.9.1",
     "jest": "^30.4.2",
     "prettier": "3.8.3",
     "prettier-2": "npm:prettier@^2",
