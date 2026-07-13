@@ -27,7 +27,7 @@
     "@aws-sdk/client-s3": "^3.1079.0",
     "@aws-sdk/util-arn-parser": "^3.972.26",
     "@types/aws-lambda": "^8.10.162",
-    "aws-cdk": "^2.1129.0",
+    "aws-cdk": "^2.1130.0",
     "aws-cdk-lib": "2.261.0",
     "aws-embedded-metrics": "^4.2.1",
     "aws-lambda": "^1.0.7",
