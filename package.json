@@ -22,7 +22,7 @@
     "typescript": "~7.0.2"
   },
   "dependencies": {
-    "@aws-sdk/client-cloudwatch": "^3.1085.0",
+    "@aws-sdk/client-cloudwatch": "^3.1090.0",
     "@aws-sdk/client-dynamodb": "^3.1085.0",
     "@aws-sdk/client-s3": "^3.1085.0",
     "@aws-sdk/util-arn-parser": "^3.972.26",
