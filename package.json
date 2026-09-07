@@ -14,7 +14,7 @@
   "devDependencies": {
     "@types/jest": "^30.0.0",
     "@types/node": "26.4.0",
-    "jest": "^30.4.2",
+    "jest": "^30.5.1",
     "prettier": "3.9.6",
     "prettier-2": "npm:prettier@^2",
     "ts-jest": "^29.4.12",
