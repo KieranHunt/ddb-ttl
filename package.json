@@ -34,7 +34,7 @@
     "constructs": "^10.8.1",
     "esbuild": "^0.28.2",
     "source-map-support": "^0.5.21",
-    "zod": "^4.4.3"
+    "zod": "^4.5.4"
   },
   "overrides": {
     "@aws-sdk/xml-builder": {
