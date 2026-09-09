@@ -1,6 +1,7 @@
 import { App } from "aws-cdk-lib";
 import { DdbTtlStack } from "../lib/ddb-ttl-stack";
 import { Template } from "aws-cdk-lib/assertions";
+import cdkJson from "../cdk.json";
 
 type TemplateJson = ReturnType<Template["toJSON"]>;
 
@@ -23,10 +24,8 @@ const replaceS3Key: (template: TemplateJson) => TemplateJson = (template) => {
 
 describe(DdbTtlStack, () => {
   test("Matches the snapshot", () => {
-    // The CDK CLI loads feature flags from cdk.json; tests must pass them explicitly.
-    const app = new App({
-      context: { "@aws-cdk/aws-lambda-nodejs:useLatestRuntimeVersion": true },
-    });
+    // Jest never reads cdk.json, so the test passes its feature flags explicitly to match CLI synthesis.
+    const app = new App({ context: cdkJson.context });
 
     const ddbTtlStack = new DdbTtlStack(app, "DdbTtlStack");
 
@@ -228,20 +227,18 @@ describe(DdbTtlStack, () => {
                   {
                     "Action": [
                       "dynamodb:BatchWriteItem",
-                      "dynamodb:PutItem",
-                      "dynamodb:UpdateItem",
                       "dynamodb:DeleteItem",
                       "dynamodb:DescribeTable",
+                      "dynamodb:PutItem",
+                      "dynamodb:UpdateItem",
                     ],
                     "Effect": "Allow",
-                    "Resource": [
-                      {
-                        "Fn::GetAtt": [
-                          "TableCD117FA1",
-                          "Arn",
-                        ],
-                      },
-                    ],
+                    "Resource": {
+                      "Fn::GetAtt": [
+                        "TableCD117FA1",
+                        "Arn",
+                      ],
+                    },
                   },
                 ],
                 "Version": "2012-10-17",
@@ -345,7 +342,10 @@ describe(DdbTtlStack, () => {
               "PolicyDocument": {
                 "Statement": [
                   {
-                    "Action": "dynamodb:ListStreams",
+                    "Action": [
+                      "cloudwatch:GetMetricWidgetImage",
+                      "dynamodb:ListStreams",
+                    ],
                     "Effect": "Allow",
                     "Resource": "*",
                   },
@@ -364,22 +364,17 @@ describe(DdbTtlStack, () => {
                     },
                   },
                   {
-                    "Action": "cloudwatch:GetMetricWidgetImage",
-                    "Effect": "Allow",
-                    "Resource": "*",
-                  },
-                  {
                     "Action": [
-                      "s3:GetObject*",
-                      "s3:GetBucket*",
-                      "s3:List*",
+                      "s3:Abort*",
                       "s3:DeleteObject*",
+                      "s3:GetBucket*",
+                      "s3:GetObject*",
+                      "s3:List*",
                       "s3:PutObject",
                       "s3:PutObjectLegalHold",
                       "s3:PutObjectRetention",
                       "s3:PutObjectTagging",
                       "s3:PutObjectVersionTagging",
-                      "s3:Abort*",
                     ],
                     "Effect": "Allow",
                     "Resource": [
