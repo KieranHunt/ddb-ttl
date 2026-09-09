@@ -1,2 +1,5 @@
 [tools]
 node = "24"
+
+[env]
+AWS_PROFILE = "personal"
