@@ -12,6 +12,7 @@
     "noImplicitOverride": true,
     "module": "preserve",
     "noEmit": true,
+    "types": ["node", "jest"],
     "lib": ["es2022"]
   },
   "exclude": ["cdk.out", "node_modules"]

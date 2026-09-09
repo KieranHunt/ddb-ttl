@@ -23,7 +23,10 @@ const replaceS3Key: (template: TemplateJson) => TemplateJson = (template) => {
 
 describe(DdbTtlStack, () => {
   test("Matches the snapshot", () => {
-    const app = new App();
+    // The CDK CLI loads feature flags from cdk.json; tests must pass them explicitly.
+    const app = new App({
+      context: { "@aws-cdk/aws-lambda-nodejs:useLatestRuntimeVersion": true },
+    });
 
     const ddbTtlStack = new DdbTtlStack(app, "DdbTtlStack");
 
@@ -171,7 +174,6 @@ describe(DdbTtlStack, () => {
               },
               "Environment": {
                 "Variables": {
-                  "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
                   "TABLE": {
                     "Ref": "TableCD117FA1",
                   },
@@ -184,7 +186,7 @@ describe(DdbTtlStack, () => {
                   "Arn",
                 ],
               },
-              "Runtime": "nodejs16.x",
+              "Runtime": "nodejs24.x",
             },
             "Type": "AWS::Lambda::Function",
           },
@@ -267,7 +269,6 @@ describe(DdbTtlStack, () => {
               },
               "Environment": {
                 "Variables": {
-                  "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
                   "BUCKET": {
                     "Ref": "Bucket83908E77",
                   },
@@ -280,7 +281,7 @@ describe(DdbTtlStack, () => {
                   "Arn",
                 ],
               },
-              "Runtime": "nodejs16.x",
+              "Runtime": "nodejs24.x",
             },
             "Type": "AWS::Lambda::Function",
           },
