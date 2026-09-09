@@ -18,9 +18,15 @@ export class DdbTtlStack extends Stack {
       schedule: Schedule.rate(Duration.minutes(1)),
     });
 
+    // NODEJS_LATEST counts as a variable runtime, which disables CDK's default @aws-sdk/* externalization; list externals explicitly so the SDK comes from the nodejs24.x runtime.
+    const runtimeProvidedModules = ["@aws-sdk/*", "@smithy/*"];
+
     const itemPutter = new NodejsFunction(this, "ItemPutterFunction", {
       entry: join(__dirname, "put-item.function.ts"),
       handler: "handler",
+      bundling: {
+        externalModules: runtimeProvidedModules,
+      },
     });
 
     putItemRule.addTarget(new LambdaFunction(itemPutter));
@@ -46,6 +52,9 @@ export class DdbTtlStack extends Stack {
     const streamProcessor = new NodejsFunction(this, "StreamProcessorFunction", {
       entry: join(__dirname, "process-stream.function.ts"),
       handler: "handler",
+      bundling: {
+        externalModules: runtimeProvidedModules,
+      },
     });
 
     table.grantStreamRead(streamProcessor);
