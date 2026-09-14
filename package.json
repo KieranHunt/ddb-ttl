@@ -16,7 +16,7 @@
     "@swc/jest": "^0.2.39",
     "@types/aws-lambda": "^8.10.163",
     "@types/jest": "^30.0.0",
-    "@types/node": "^24.13.3",
+    "@types/node": "^26.5.1",
     "jest": "^30.5.1",
     "prettier": "3.9.6",
     "prettier-2": "npm:prettier@^2",
